@@ -61,6 +61,7 @@ pub fn delete_todo<P: AsRef<Path>>(data_file: P, id: &str) {
 }
 
 pub fn show_info<P: AsRef<Path>>(data_file: P) {
+    println!("\n");
     println!("\t##    ##          #######        #####         ");
     println!("\t##    ##             #           #   ##        ");
     println!("\t###  # # #   #       #     ###   #    #   ###  ");
@@ -106,3 +107,4 @@ fn save_todos<P: AsRef<Path>>(data_file: P, todos: &[ToDoData]) {
     let mut file = OpenOptions::new().write(true).create(true).truncate(true).open(data_file).expect("データファイルの作成に失敗しました");
     file.write_all(json_string.as_bytes()).expect("データファイルへの書き込みに失敗しました");
 }
+

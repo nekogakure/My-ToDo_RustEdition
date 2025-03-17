@@ -23,6 +23,26 @@ struct ToDoData {
     date: String,
 }
 
+fn show_help() {
+    println!("\n");
+    println!("\t##    ##          #######        #####         ");
+    println!("\t##    ##             #           #   ##        ");
+    println!("\t###  # # #   #       #     ###   #    #   ###  ");
+    println!("\t# #  # #  #  #       #    #  ##  #    ## #  ## ");
+    println!("\t# #  # #  # #        #    #   #  #    ## #   # ");
+    println!("\t#  ##  #   ##        #    #   #  #    #  #   # ");
+    println!("\t#  ##  #   ##        #    #  ##  #   ##  #  ## ");
+    println!("\t#      #   #         #     ###   #####    ###  ");
+    println!("\t          ##                                   ");
+    println!("\t          #                                    ");
+    println!("==============================================================");
+    println!("'add XXXX'  : Add a new task.");
+    println!("'done XXXX' : Mark a task as done.");
+    println!("'del XXXX'  : Delete a task.");
+    println!("'info'      : Show info.");
+    println!("'help'      : Show help.");
+}
+
 fn main() {
     /* DATA_INPORT */
     let config = load_or_create_config();
@@ -65,6 +85,7 @@ fn main() {
             delete_todo(data_file, id);
         }
         "info" => show_info(data_file),
+        "help" => show_help(),
         _ => println!("Unknown command: {}", command),
     }
 }
