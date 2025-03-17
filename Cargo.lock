@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "My-ToDo_RustEdition"
+name = "My-ToDo_CLI"
 version = "0.0.1"
 dependencies = [
  "chrono",
