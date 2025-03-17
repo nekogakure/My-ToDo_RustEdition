@@ -1,9 +1,10 @@
-use std::fs::{File, OpenOptions};
+use std::fs::{File, OpenOptions, create_dir_all};
 use std::io::{Read, Write};
 use std::path::Path;
 use serde::{Serialize, Deserialize};
 use serde_json::Value;
 use uuid::Uuid;
+use chrono::{Local, Duration};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ToDoData {
@@ -14,7 +15,13 @@ struct ToDoData {
 }
 
 pub fn add_todo<P: AsRef<Path>>(data_file: P, content: &str) {
-    let mut todos = load_todos(&data_file);
+    let data_file = data_file.as_ref();
+    if let Some(parent) = data_file.parent() {
+        if !parent.exists() {
+            create_dir_all(parent).expect("データファイルのディレクトリ作成に失敗しました");
+        }
+    }
+    let mut todos = load_todos(data_file);
     let new_todo = ToDoData {
         id: Uuid::new_v4().to_string(),
         content: content.to_string(),
@@ -22,13 +29,18 @@ pub fn add_todo<P: AsRef<Path>>(data_file: P, content: &str) {
         date: chrono::Local::now().to_string(),
     };
     todos.push(new_todo);
-    save_todos(&data_file, &todos);
+    save_todos(data_file, &todos);
 }
 
 pub fn list_todos<P: AsRef<Path>>(data_file: P) {
-    let todos = load_todos(&data_file);
+    let todos = load_todos(data_file);
+    println!("========================================");
+    println!("Content\t\t| Done\t| Date");
+    println!("========================================");
     for todo in todos {
-        println!("{:?}", todo);
+        let date = todo.date.split_whitespace().next().unwrap_or("");
+        println!("{}\t\t| {}\t| {}", todo.content, todo.done, date);
+        println!("----------------------------------------");
     }
 }
 
@@ -39,7 +51,7 @@ pub fn mark_done<P: AsRef<Path>>(data_file: P, id: &str) {
             todo.done = true;
         }
     }
-    save_todos(&data_file, &todos);
+    save_todos(data_file, &todos);
 }
 
 pub fn delete_todo<P: AsRef<Path>>(data_file: P, id: &str) {
@@ -49,11 +61,34 @@ pub fn delete_todo<P: AsRef<Path>>(data_file: P, id: &str) {
 }
 
 pub fn show_info<P: AsRef<Path>>(data_file: P) {
-    let todos = load_todos(&data_file);
-    let total = todos.len();
-    let done = todos.iter().filter(|todo| todo.done).count();
-    let pending = total - done;
-    println!("Total: {}, Done: {}, Pending: {}", total, done, pending);
+    println!("\t##    ##          #######        #####         ");
+    println!("\t##    ##             #           #   ##        ");
+    println!("\t###  # # #   #       #     ###   #    #   ###  ");
+    println!("\t# #  # #  #  #       #    #  ##  #    ## #  ## ");
+    println!("\t# #  # #  # #        #    #   #  #    ## #   # ");
+    println!("\t#  ##  #   ##        #    #   #  #    #  #   # ");
+    println!("\t#  ##  #   ##        #    #  ##  #   ##  #  ## ");
+    println!("\t#      #   #         #     ###   #####    ###  ");
+    println!("\t          ##                                   ");
+    println!("\t          #                                    ");
+    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+    println!("\n\t\tVersion: {}", VERSION);
+    println!("\t\tMade by, nekogakure.");
+}
+
+pub fn clean_old_tasks<P: AsRef<Path>>(data_file: P, archive_save_date: u32) {
+    let mut todos = load_todos(&data_file);
+    let now = Local::now();
+    todos.retain(|todo| {
+        if todo.done {
+            let task_date = chrono::DateTime::parse_from_rfc3339(&todo.date).expect("日付のパースに失敗しました");
+            let duration = now.signed_duration_since(task_date);
+            duration.num_days() < archive_save_date as i64
+        } else {
+            true
+        }
+    });
+    save_todos(&data_file, &todos);
 }
 
 fn load_todos<P: AsRef<Path>>(data_file: P) -> Vec<ToDoData> {
