@@ -44,10 +44,10 @@ fn show_help() {
 }
 
 fn main() {
-    /* DATA_INPORT */
+    // DATA_INPORT 
     let config = load_or_create_config();
 
-    /* MAIN */
+    // MAIN
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         list_todos(&config.data_file);
