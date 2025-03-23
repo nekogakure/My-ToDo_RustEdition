@@ -6,7 +6,7 @@ use serde_json::Value;
 use uuid::Uuid;
 use chrono::{Local, Duration};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize)]
 struct ToDoData {
     id: String,
     content: String,

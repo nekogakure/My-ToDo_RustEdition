@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate serde;
 
 mod func;
@@ -8,9 +7,10 @@ use std::env;
 use std::path::Path;
 use func::{add_todo, list_todos, mark_done, delete_todo, show_info, clean_old_tasks};
 use load::load_or_create_config;
+use clap::{Parser, Subcommand};
 
 /* DATA */
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Parser)]
 pub struct Config {
     pub data_file: String,
     pub archive_save_date: u32,
