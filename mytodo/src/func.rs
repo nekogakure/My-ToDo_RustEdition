@@ -41,7 +41,7 @@ pub fn list_todos<P: AsRef<Path>>(data_file: P) {
     println!("========================================");
     for todo in todos {
         let date = todo.date.split_whitespace().next().unwrap_or("");
-        println!("{}\t\t| {}\t| {}\t| {}", todo.content, todo.done, todo.date);
+        println!("{}\t\t| {}\t| {}\t", todo.content, todo.done, todo.date);
         println!("----------------------------------------");
     }
 }
