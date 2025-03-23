@@ -11,8 +11,8 @@ pub struct Config {
 }
 
 pub fn load_or_create_config() -> Config {
-    let appdata = env::var("APPDATA").expect("APPDATA環境変数の取得に失敗しました");
-    let config_dir = PathBuf::from(format!("{}/My-ToDo", appdata));
+    let appdata = dirs_next::config_dir().expect("config directoryの取得に失敗しました");
+    let config_dir = PathBuf::from(format!("{}/My-ToDo", appdata.display()));
     let config_file = config_dir.join(".conf");
 
     if !config_dir.exists() {
@@ -38,7 +38,7 @@ pub fn load_or_create_config() -> Config {
     } else {
         // Default Config
         let default_config = Config {
-            data_file: format!("{}/My-ToDo/data/todo.json", appdata),
+            data_file: format!("{}/My-ToDo/data/todo.json", appdata.display()),
             archive_save_date: 30,
         };
 

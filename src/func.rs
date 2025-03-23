@@ -1,10 +1,9 @@
-use std::fs::{File, OpenOptions, create_dir_all};
+use std::fs::{self, create_dir_all, File, OpenOptions};
 use std::io::{Read, Write};
 use std::path::Path;
 use serde::{Serialize, Deserialize};
-use serde_json::Value;
 use uuid::Uuid;
-use chrono::{Local, Duration};
+use chrono::Local;
 
 #[derive(Serialize, Deserialize)]
 struct ToDoData {
@@ -18,7 +17,10 @@ pub fn add_todo<P: AsRef<Path>>(data_file: P, content: &str) {
     let data_file = data_file.as_ref();
     if let Some(parent) = data_file.parent() {
         if !parent.exists() {
-            create_dir_all(parent).expect("データファイルのディレクトリ作成に失敗しました");
+            if let Err(e) = create_dir_all(parent){
+                eprintln!("ディレクトリの作成に失敗しました: {}", e);
+                return;
+            }
         }
     }
     let mut todos = load_todos(data_file);
@@ -56,7 +58,9 @@ pub fn mark_done<P: AsRef<Path>>(data_file: P, id: &str) {
 
 pub fn delete_todo<P: AsRef<Path>>(data_file: P, id: &str) {
     let mut todos = load_todos(&data_file);
-    todos.retain(|todo| todo.id != id);
+    if let Some(o) = todos.iter().position(|todo| todo.id == id) {
+        todos.remove(o);
+    }
     save_todos(&data_file, &todos);
 }
 
@@ -104,6 +108,11 @@ fn load_todos<P: AsRef<Path>>(data_file: P) -> Vec<ToDoData> {
 
 fn save_todos<P: AsRef<Path>>(data_file: P, todos: &[ToDoData]) {
     let json_string = serde_json::to_string_pretty(todos).expect("データのシリアライズに失敗しました");
+
+    if !data_file.as_ref().exists() {
+        std::fs::create_dir_all(data_file.as_ref().parent().unwrap()).expect("ディレクトリの作成に失敗しました");
+    }
+    
     let mut file = OpenOptions::new().write(true).create(true).truncate(true).open(data_file).expect("データファイルの作成に失敗しました");
     file.write_all(json_string.as_bytes()).expect("データファイルへの書き込みに失敗しました");
 }
