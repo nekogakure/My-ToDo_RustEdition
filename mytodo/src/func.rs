@@ -1,4 +1,4 @@
-use std::fs::{self, create_dir_all, File, OpenOptions};
+use std::fs::{create_dir_all, File, OpenOptions};
 use std::io::{Read, Write};
 use std::path::Path;
 use serde::{Serialize, Deserialize};
@@ -40,7 +40,6 @@ pub fn list_todos<P: AsRef<Path>>(data_file: P) {
     println!("Content\t\t| Done\t| Date");
     println!("========================================");
     for todo in todos {
-        let date = todo.date.split_whitespace().next().unwrap_or("");
         println!("{}\t\t| {}\t| {}\t", todo.content, todo.done, todo.date);
         println!("----------------------------------------");
     }
@@ -64,7 +63,7 @@ pub fn delete_todo<P: AsRef<Path>>(data_file: P, id: &str) {
     save_todos(&data_file, &todos);
 }
 
-pub fn show_info<P: AsRef<Path>>(data_file: P) {
+pub fn show_info() {
     println!("\n");
     println!("\t##    ##          #######        #####         ");
     println!("\t##    ##             #           #   ##        ");
