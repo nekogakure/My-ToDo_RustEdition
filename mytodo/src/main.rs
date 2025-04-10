@@ -1,8 +1,6 @@
-
-
 mod func;
 mod load;
-
+mod help;
 
 use std::path::Path;
 use func::{add_todo, list_todos, mark_done, delete_todo, show_info, clean_old_tasks};
@@ -13,10 +11,10 @@ use clap::{Parser, Subcommand};
 #[derive(Parser)]
 #[clap(name = "My-ToDo_CLI", disable_help_subcommand = true)]
 pub struct Config {
-    
     #[command(subcommand)]
     to_do_command: Option<ToDoCommand>,
 }
+
 
 #[derive(Subcommand)]
 enum ToDoCommand {
@@ -34,25 +32,6 @@ enum ToDoCommand {
     Help,
 }
 
-fn show_help() {
-    println!("\n");
-    println!("\t##    ##          #######        #####         ");
-    println!("\t##    ##             #           #   ##        ");
-    println!("\t###  # # #   #       #     ###   #    #   ###  ");
-    println!("\t# #  # #  #  #       #    #  ##  #    ## #  ## ");
-    println!("\t# #  # #  # #        #    #   #  #    ## #   # ");
-    println!("\t#  ##  #   ##        #    #   #  #    #  #   # ");
-    println!("\t#  ##  #   ##        #    #  ##  #   ##  #  ## ");
-    println!("\t#      #   #         #     ###   #####    ###  ");
-    println!("\t          ##                                   ");
-    println!("\t          #                                    ");
-    println!("==============================================================");
-    println!("'add XXXX'  : Add a new task.");
-    println!("'done XXXX' : Mark a task as done.");
-    println!("'del XXXX'  : Delete a task.");
-    println!("'info'      : Show info.");
-    println!("'help'      : Show help.");
-}
 
 fn main() {
     // DATA_INPORT 
@@ -87,7 +66,7 @@ fn main() {
             show_info();
         }
         ToDoCommand::Help => {
-            show_help();
+            help::show_help();
         }
     }    
         
