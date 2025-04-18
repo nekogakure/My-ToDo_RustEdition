@@ -1,7 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
 use std::io::{Read, Write};
 use std::path::PathBuf;
-use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -19,12 +19,15 @@ pub fn load_or_create_config() -> Config {
     }
 
     if config_file.exists() {
-        let mut file = File::open(&config_file).expect("コンフィグファイルの読み込みに失敗しました");
+        let mut file =
+            File::open(&config_file).expect("コンフィグファイルの読み込みに失敗しました");
         let mut contents = String::new();
-        file.read_to_string(&mut contents).expect("コンフィグファイルの読み込みに失敗しました");
+        file.read_to_string(&mut contents)
+            .expect("コンフィグファイルの読み込みに失敗しました");
 
         let mut config: Config = serde_json::from_str(&contents).unwrap_or_else(|_| {
-            let mut config: Config = serde_json::from_str(&contents).expect("コンフィグのパースに失敗しました");
+            let mut config: Config =
+                serde_json::from_str(&contents).expect("コンフィグのパースに失敗しました");
             config.archive_save_date = 30;
             config
         });
@@ -41,9 +44,11 @@ pub fn load_or_create_config() -> Config {
             archive_save_date: 30,
         };
 
-        let json_string = serde_json::to_string_pretty(&default_config).expect("コンフィグのシリアライズに失敗しました");
+        let json_string = serde_json::to_string_pretty(&default_config)
+            .expect("コンフィグのシリアライズに失敗しました");
         let mut file = File::create(&config_file).expect("コンフィグの作成に失敗しました");
-        file.write_all(json_string.as_bytes()).expect("コンフィグへの書き込みに失敗しました");
+        file.write_all(json_string.as_bytes())
+            .expect("コンフィグへの書き込みに失敗しました");
 
         default_config
     }

@@ -1,4 +1,4 @@
-pub fn show_help() {
+pub fn show_info() {
     println!("\n");
     println!("\t##    ##          #######        #####         ");
     println!("\t##    ##             #           #   ##        ");
@@ -10,10 +10,7 @@ pub fn show_help() {
     println!("\t#      #   #         #     ###   #####    ###  ");
     println!("\t          ##                                   ");
     println!("\t          #                                    ");
-    println!("==============================================================");
-    println!("'add XXXX'  : Add a new task.");
-    println!("'done XXXX' : Mark a task as done.");
-    println!("'del XXXX'  : Delete a task.");
-    println!("'info'      : Show info.");
-    println!("'help'      : Show help.");
+    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+    println!("\n\t\tVersion: {}", VERSION);
+    println!("\t\tMade by, nekogakure.");
 }
